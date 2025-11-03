@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Skin Disease Classifier</title>
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ text-align: center;
+ margin: 0;
+ padding: 0;
+ background-color: #f4f4f4;
+ }
+ header {
+ background-color: #007bff;
+ color: white;
+ padding: 15px;
+ font-size: 24px;
+ }
+ main {
+ padding: 50px;
+ }
+ input, button {
+ margin: 20px;
+ padding: 10px;
+ font-size: 16px;
+ }
+ button {
+ background-color: #007bff;
+ color: white;
+ border: none;
+ cursor: pointer;
+ border-radius: 5px;
+ }
+ button:hover {
+ background-color: #0056b3;
+ }
+ img {
+ max-width: 300px;
+ margin-top: 20px;
+ border-radius: 10px;
+ box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+ }
+ #result {
+ font-size: 20px;
+ font-weight: bold;
+ margin-top: 20px;
+ }
+ footer {
+ background-color: #007bff;
+ color: white;
+ padding: 10px;
+ position: fixed;
+width: 100%;
+ bottom: 0;
+ text-align: center;
+ }
+ </style>
+ </head>
+ <body>
+ <header>Skin Disease Classifier</header>
+ <main>
+ <h2>Upload an Image for Classification</h2>
+ <input type="file" id="imageUpload" accept="image/*">
+ <br>
+ <button onclick="uploadImage()">Classify</button>
+ <br>
+ <img id="preview" src="" alt="Image Preview" hidden>
+ <p id="result"></p>
+ </main>
+ <footer>&copy; 2025 Skin Disease Classifier | All Rights Reserved</footer>
+ <script>
+function uploadImage() {
+  let fileInput = document.getElementById("imageUpload");
+  let file = fileInput.files[0];
+  if (!file) {
+    alert("Please select an image first.");
+    return;
+  }
+
+  let formData = new FormData();
+  formData.append("file", file);
+
+  fetch("http://127.0.0.1:5000/predict", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("result").innerText =
+      "Predicted Disease: " + data.prediction + " (" + data.confidence + "%)";
+    let img = document.getElementById("preview");
+    img.src = URL.createObjectURL(file);
+    img.hidden = false;
+  })
+  .catch(error => console.error("Error:", error));
+}
+</script>
+
+ </body>
+ </html>
